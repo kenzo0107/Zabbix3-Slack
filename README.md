@@ -11,7 +11,9 @@ Slack Notification from Zabbix 3.x
 
 ```
 [Zabbix-Server]$ cd /usr/lib/zabbix/alertscripts    # AlertScriptsPath
-[Zabbix-Server]$ wget https://github.com/kenzo0107/zabbix3-slack/blob/master/slack.sh
+[Zabbix-Server]$ git clone https://github.com/kenzo0107/zabbix3-slack
+[Zabbix-Server]$ mv zabbix3-slack/slack.sh .
+[Zabbix-Server]$ rm -r zabbix3-slack
 [Zabbix-Server]$ chmod 755 slack.sh
 [Zabbix-Server]$ vim slack.sh  # change incoming_webhook yourself.
 ```
