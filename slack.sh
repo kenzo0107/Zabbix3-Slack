@@ -1,5 +1,35 @@
 #!/bin/bash
 
+# Zabbix > Configuration > Action
+#
+# Default subject : PROBLEM alert - {TRIGGER.NAME} is {TRIGGER.STATUS}
+# Default message :
+# HOST: {HOST.NAME}
+# TRIGGER_NAME: {TRIGGER.NAME}
+# TRIGGER_STATUS: {TRIGGER.STATUS}
+# TRIGGER_SEVERITY: {TRIGGER.SEVERITY}
+# DATETIME: {DATE} / {TIME}
+# ITEM_ID: {ITEM.ID1}
+# ITEM_NAME: {ITEM.NAME1}
+# ITEM_KEY: {ITEM.KEY1}
+# ITEM_VALUE: {ITEM.VALUE1}
+# EVENT_ID: {EVENT.ID}
+# TRIGGER_URL: {TRIGGER.URL}
+#
+# Recovery subject : RECOVERY alert - {TRIGGER.NAME} is {TRIGGER.STATUS}
+# Recovery message :
+# HOST: {HOST.NAME}
+# TRIGGER_NAME: {TRIGGER.NAME}
+# TRIGGER_STATUS: {TRIGGER.STATUS}
+# TRIGGER_SEVERITY: {TRIGGER.SEVERITY}
+# DATETIME: {DATE} / {TIME}
+# ITEM_ID: {ITEM.ID1}
+# ITEM_NAME: {ITEM.NAME1}
+# ITEM_KEY: {ITEM.KEY1}
+# ITEM_VALUE: {ITEM.VALUE1}
+# EVENT_ID: {EVENT.ID}
+# TRIGGER_URL: {TRIGGER.URL}
+
 # define yourself.
 incoming_webhook='https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
@@ -18,24 +48,24 @@ message="$3"
 # {ALERT.SUBJECT}により emoji 変更.
 function get_emoji() {
     emoji=":ghost:"
-    case "$1" in
-      '*RECOVERY*' ) emoji=':smile:' ;;
-      '*PLOBLEM*'  ) emoji=':frowning:' ;;
-    esac
+    if [[ `echo "$1" | grep 'RECOVERY'` ]]; then
+        emoji=':smile:'
+    elif [[ `echo "$1" | grep 'PROBLEM'` ]]; then
+        emoji=':frowning:'
+    fi
     echo "${emoji}"
 }
 
-
 # color設定取得
 function get_color() {
-    status="$1"
-    severity="$2"
-    if [ "${status}" == 'OK' ]; then
+    status=$(echo "$1" | tr -d " ")
+    severity=$(echo "$2" | tr -d " ")
+    if [[ `echo "${status}" | grep 'OK'` ]]; then
         case "${severity}" in
           'Information') color="#439FE0" ;;
           *) color="good" ;;
         esac
-    elif [ "${status}" == 'PROBLEM' ]; then
+    elif [[ `echo "${status}" | grep 'PROBLEM'` ]]; then
         case "${severity}" in
           'Information') color="#439FE0" ;;
           'Warning') color="warning" ;;
